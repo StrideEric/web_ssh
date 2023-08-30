@@ -31,3 +31,7 @@ body {
 .form-section label, .form-section input, .form-section select {
     margin-bottom: 10px;
 }
+
+.oculto {
+    display: none;
+}

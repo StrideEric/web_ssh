@@ -1,59 +1,130 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Grupo 3 - Benchmarking y Monitoreo</title>
     <link rel="stylesheet" type="text/css" href="../static/styles.css">
 </head>
+
 <body>
     <div class="container">
         <h1 class="title">Grupo 3</h1>
         <h2 class="title">Benchmarking y Monitoreo</h2>
         <h3 class="title">SSH Web Interface</h3>
-            <div class="form-section">
-                <form action="/execute_ssh_command" method="post">
-                    <label for="command">Selecciona un comando:</label>
-                    <select id="command" name="command">
-                        <option value="free">Comando free</option>
-                        <option value="lscpu">Comando lscpu</option>
-                        <option value="cat /proc/meminfo">Command meminfo</option>
-                        <option value="vmstat">Comando vmstat</option>
-                        <option value="stress">Comando stress</option>
-                        <!-- Agrega más opciones de comandos aquí si es necesario -->
+        <div class="form-section">
+            <form action="/execute_ssh_command" method="post">
+                <label for="command">Selecciona un comando:</label>
+                <select id="command" name="command">
+                    <option value="free">Comando free</option>
+                    <option value="lscpu">Comando lscpu</option>
+                    <option value="cat /proc/meminfo">Command meminfo</option>
+                    <option value="vmstat">Comando vmstat</option>
+                    <option value="stress">Comando stress</option>
+                    <!-- Agrega más opciones de comandos aquí si es necesario -->
+                </select>
+
+                <div class="params-free">
+                    <br />
+                    <label for="pfree">Parámetros de free:</label>
+                    <select id="pfree" name="pfree">
+                        <option value="-b">En bytes (-b)</option>
+                        <option value="-k">En KB (-k)</option>
+                        <option value="-m">En MB (-m)</option>
+                        <option value="-g">En GB (-g)</option>
                     </select>
-                    </br>
-                    <label for="parameters" >Parametros:</label>
-                    <input type="text" id="parameters" name="parameters">
-                    </br>
-                    <button type="submit">Ejecutar comando</button>
-                </form>        
-            </div>
+                </div>
+                
+                <div class="params-lscpu oculto">
+                    <br>
+                    <label for="command">Parámetros de lscpu:</label>
+                    <br>
+                    <input type="checkbox" id="plscpu" name="plscpu">
+                    <label for="plscpu">Mostrar información extendida (-e)</label>
+                </div>
+
+                <!-- </br> -->
+                <!-- <label for="parameters">Parametros:</label> -->
+                <!-- <input type="text" id="parameters" name="parameters"> -->
+                <div class="params-stress oculto">
+                    <br />
+                    <label for="c">Cantidad de núcleos del procesador:</label>
+                    <select id="c" name="c">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+
+                    <br />
+                    <label for="command">Cantidad de memoria:</label>
+                    <select id="m" name="m">
+                        <option value="1">1GB</option>
+                        <option value="2">2GB</option>
+                        <option value="4">4GB</option>
+                    </select>
+                </div>
+
+                </br>
+                <button type="submit">Ejecutar comando</button>
+            </form>
+        </div>
         <pre id="output"></pre>
     </div>
 
     <script>
-        document.querySelector("form").addEventListener("submit", function(event) {
+        const paramFree = document.querySelector(".params-free");
+        const paramLscpu = document.querySelector(".params-lscpu");
+        const paramStress = document.querySelector(".params-stress");
+
+        document.getElementById("command").addEventListener("change", function(e) {
+            const value = e.currentTarget.value;
+            if(value === "free") {
+                paramFree.classList.remove("oculto");
+            } else {
+                paramFree.classList.add("oculto");
+            }
+            
+            if(value === "lscpu") {
+                paramLscpu.classList.remove("oculto");
+            } else {
+                paramLscpu.classList.add("oculto");
+            }
+
+            if(value === "stress") {
+                // paramStress.classList.remove("oculto");
+            } else {
+                paramStress.classList.add("oculto");
+            }
+        })
+        
+        document.querySelector("form").addEventListener("submit", function (event) {
             event.preventDefault();
-    
+
             const selectedCommand = document.getElementById("command").value;
-            const parameters = document.getElementById("parameters").value;
-    
+            // const parameters = document.getElementById("parameters").value;
+            const pfree = document.getElementById("pfree").value;
+            const plscpu = document.getElementById("plscpu").checked ? "-e" : "";
+
             const formData = new FormData();
             formData.append("command", selectedCommand);
-            formData.append("parameters", parameters);
-    
+            // formData.append("parameters", parameters);
+            formData.append("pfree", pfree);
+            formData.append("plscpu", plscpu);
+
             fetch("/execute_ssh_command", {
                 method: "POST",
                 body: formData
             })
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById("output").textContent = data;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("output").textContent = data;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         });
     </script>
-    
+
 </body>
+
 </html>

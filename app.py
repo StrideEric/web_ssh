@@ -17,9 +17,28 @@ def execute_ssh_command():
     username = "mdfk"
     password = "asdpoasd"
     command = request.form.get("command")
+    p = request.form.get("p")
+    c = request.form.get("c")
+    m = request.form.get("m")
     parameters = request.form.get("parameters")
+    pfree = request.form.get("pfree")
+    plscpu = request.form.get("plscpu")
 
-    full_command = f"{command} {parameters}"  # Combina el comando con los parámetros
+    full_command = ""
+
+    if command == "free":
+        full_command = f"free {pfree}"  # Combina el comando con los parámetros
+    if command == "lscpu":
+        full_command = f"lscpu {plscpu}"
+    if "meminfo" in command:
+        full_command = command
+    if command == "vmstat":
+        full_command = command
+    if command == "stress":
+        full_command = "stress --vm 1 --vm-bytes 1G"
+    full_command = full_command.strip()
+
+    # stress --vm 4 --vm-bytes 2G
 
     try:
         ssh.connect(host, username=username, password=password)
@@ -29,9 +48,8 @@ def execute_ssh_command():
         output = str(e)
     finally:
         ssh.close()
-
     #return render_template("index.html", output=output)
     return output
 
 if __name__ == "__main__":
-    app.run(host="192.168.137.1", port=5000)
+    app.run(host="0.0.0.0", port=5000)
