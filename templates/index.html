@@ -1,25 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SSH Web Interface</title>
+    <title>Grupo 3 - Benchmarking y Monitoreo</title>
+    <link rel="stylesheet" type="text/css" href="../static/styles.css">
 </head>
 <body>
-    <form action="/execute_ssh_command" method="post">
-        <label for="command">Select Command:</label>
-        <select id="command" name="command">
-            <option value="free">Command free</option>
-            <option value="lscpu">Command lscpu</option>
-            <option value="cat /proc/meminfo">Command meminfo</option>
-            <option value="stress">Command stress</option>
-            <!-- Agrega más opciones de comandos aquí si es necesario -->
-        </select>
-        <br>
-        <label for="parameters">Enter Parameters:</label>
-        <input type="text" id="parameters" name="parameters">
-        <button type="submit">Execute Command</button>
-    </form>
-
-    <pre id="output"></pre>
+    <div class="container">
+        <h1 class="title">Grupo 3</h1>
+        <h2 class="title">Benchmarking y Monitoreo</h2>
+        <h3 class="title">SSH Web Interface</h3>
+            <div class="form-section">
+                <form action="/execute_ssh_command" method="post">
+                    <label for="command">Selecciona un comando:</label>
+                    <select id="command" name="command">
+                        <option value="free">Comando free</option>
+                        <option value="lscpu">Comando lscpu</option>
+                        <option value="cat /proc/meminfo">Command meminfo</option>
+                        <option value="vmstat">Comando vmstat</option>
+                        <option value="stress">Comando stress</option>
+                        <!-- Agrega más opciones de comandos aquí si es necesario -->
+                    </select>
+                    </br>
+                    <label for="parameters" >Parametros:</label>
+                    <input type="text" id="parameters" name="parameters">
+                    </br>
+                    <button type="submit">Ejecutar comando</button>
+                </form>        
+            </div>
+        <pre id="output"></pre>
+    </div>
 
     <script>
         document.querySelector("form").addEventListener("submit", function(event) {
